@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://nfpm.goreleaser.com/static/schema.json
+---
+name: example
+arch: all
+platform: linux
+version: "1.2.3"
+release: "r1"
+section: misc
+priority: optional
+maintainer: Community <community@thin-edge.io>
+description: example package
+vendor: thin-edge.io
+homepage: https://github.com/thin-edge/tedge-apk-plugin
+license: Apache License 2.0
+rpm:
+  # Use noarch instead of "all"
+  arch: noarch
