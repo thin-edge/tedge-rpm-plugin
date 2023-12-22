@@ -14,13 +14,13 @@ Install package via file
 
 Install/Uninstall package via Cumulocity
     # install
-    ${operation}=    Cumulocity.Install Software    vim,latest::rpm
+    ${operation}=    Cumulocity.Install Software    jq,latest::rpm
     Operation Should Be SUCCESSFUL    ${operation}
-    Cumulocity.Device Should Have Installed Software    vim
+    Cumulocity.Device Should Have Installed Software    jq
 
     # remove
-    ${operation}=    Cumulocity.Create Operation    fragments={"c8y_SoftwareUpdate":[{"name":"vim","version":"latest::rpm","url":"","action":"delete"}]}    description=Remove rpm package
+    ${operation}=    Cumulocity.Uninstall Software    jq,latest::rpm
     Operation Should Be SUCCESSFUL    ${operation}
     ${mo}=    Cumulocity.Device Should Have Fragments    c8y_SoftwareList
     Log    ${mo}
-    Should Not Contain    ${mo}    vim
+    Should Not Contain    ${mo}    jq
