@@ -14,12 +14,12 @@ Install package via file
 
 Install/Uninstall package via Cumulocity
     # install
-    ${operation}=    Cumulocity.Install Software    jq,latest::rpm
+    ${operation}=    Cumulocity.Install Software    jq,latest::rpm    timeout=180
     Operation Should Be SUCCESSFUL    ${operation}
     Cumulocity.Device Should Have Installed Software    jq
 
     # remove
-    ${operation}=    Cumulocity.Uninstall Software    jq,latest::rpm
+    ${operation}=    Cumulocity.Uninstall Software    jq,latest::rpm    timeout=180
     Operation Should Be SUCCESSFUL    ${operation}
     ${mo}=    Cumulocity.Device Should Have Fragments    c8y_SoftwareList
     Log    ${mo}

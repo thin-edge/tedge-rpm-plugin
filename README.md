@@ -15,7 +15,7 @@ The following details the technical aspects of the plugin to get an idea what sy
 |**Languages**|`shell` (posix compatible)|
 |**CPU Architectures**|`all/noarch`. Not CPU specific|
 |**Supported init systems**|`N/A`|
-|**Required Dependencies**|`dnf`|
+|**Required Dependencies**|`dnf` or `microdnf` or `zypper`|
 |**Optional Dependencies (feature specific)**|-|
 
 ### How to do I get it?
@@ -29,14 +29,14 @@ The following linux package formats are provided on the releases page and also i
 ### What will be deployed to the device?
 
 * The following software management plugins which is called when installing and removing `rpm` packages via Cumulocity IoT
-    * `rpm` - Manage (list/install/remove) packages via the dnf Package Manager
+    * `rpm` - Manage (list/install/remove) packages via an RPM base Package Manager (e.g. dnf/microdnf/zypper)
 
 
 ## Plugin Dependencies
 
 The following packages are required to use the plugin:
 
-* dnf
+* dnf or microdnf or zypper
 
 ## Development
 
@@ -50,7 +50,7 @@ The following tools are requires for local development. Please install them befo
 
 1. Build the tedge-rpm-plugin package
 
-    ```
+    ```sh
     just build
     ```
 
@@ -60,11 +60,21 @@ The following tools are requires for local development. Please install them befo
     just up
     ```
 
-3. Bootstrap the device
+3. Activate your Cumulocity IoT session in go-c8y-cli where you want to bootstrap the device to
+
+    ```sh
+    set-session
+    ```
+
+    `set-session` is part of [go-c8y-cli](https://goc8ycli.netlify.app/), check out the documentation for instructions on how to install and create your session if you don't already have one.
+
+4. Bootstrap the device
 
     ```sh
     just bootstrap
     ```
+
+    The bootstrap command used the [c8y-tedge extension](https://github.com/thin-edge/c8y-tedge).
 
 ### Stop demo
 
