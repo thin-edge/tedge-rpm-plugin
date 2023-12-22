@@ -63,14 +63,51 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+command_exists() {
+    command -V "$1" >/dev/null 2>&1
+}
+
+# Detect the rpm package manager
+get_package_manager() {
+    package_manager=
+    if command_exists dnf; then
+        package_manager="dnf"
+    elif command_exists microdnf; then
+        package_manager="microdnf"
+    elif command_exists zypper; then
+        package_manager="zypper"
+    fi
+    echo "$package_manager"
+}
+
+PACKAGE_MANAGER="${PACKAGE_MANAGER:-}"
+if [ -z "$PACKAGE_MANAGER" ]; then
+    PACKAGE_MANAGER=$(get_package_manager)
+fi
+
 case "$COMMAND" in
     prepare)
-        dnf update -y
+        case "$PACKAGE_MANAGER" in
+            zypper)
+                zypper refresh
+                ;;
+            dnf)
+                # Not all dnf version support check-update
+                dnf check-update ||:
+                ;;
+            microdnf)
+                microdnf check-update ||:
+                ;;
+        esac
         ;;
     list)
-        # tedge-rpm-plugin-0.0.0rc0 noarch {tedge-rpm-plugin} (Apache License 2.0) [installed]
-        if ! command -V dnf >/dev/null 2>&1; then
-            log "dnf is not installed"
+        if ! command_exists "$PACKAGE_MANAGER"; then
+            log "A rpm compatible command could not be found. Tried dnf, microdnf, zypper" >&2
+            exit "$EXIT_USAGE"
+        fi
+
+        if ! command_exists rpm; then
+            log "A rpm command was not found! This is very unexpected" >&2
             exit "$EXIT_USAGE"
         fi
 
@@ -87,7 +124,7 @@ case "$COMMAND" in
             log "Installing from file: $FILE"
             # dnf requires the file to have an .rpm extension
             ln -sf "$FILE" "$FILE.rpm"
-            dnf install -y "$FILE.rpm" || exit "$EXIT_FAILURE"
+            $PACKAGE_MANAGER install -y "$FILE.rpm" || exit "$EXIT_FAILURE"
             rm -f "$FILE.rpm"
         else
             MODULE="$MODULE_NAME"
@@ -96,12 +133,12 @@ case "$COMMAND" in
             fi
 
             log "Installing: $MODULE"
-            dnf install -y "$MODULE" || exit "$EXIT_FAILURE"
+            $PACKAGE_MANAGER install -y "$MODULE" || exit "$EXIT_FAILURE"
         fi
         ;;
     remove)
         # Removing
-        dnf remove -y "$MODULE_NAME" || exit "$EXIT_FAILURE"
+        $PACKAGE_MANAGER remove -y "$MODULE_NAME" || exit "$EXIT_FAILURE"
         ;;
     update-list)
         # Not supported, use remove install and remove instead
