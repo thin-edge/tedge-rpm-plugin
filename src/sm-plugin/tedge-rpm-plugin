@@ -65,7 +65,7 @@ done
 
 case "$COMMAND" in
     prepare)
-        dnf update
+        dnf update -y
         ;;
     list)
         # tedge-rpm-plugin-0.0.0rc0 noarch {tedge-rpm-plugin} (Apache License 2.0) [installed]
@@ -74,13 +74,14 @@ case "$COMMAND" in
             exit "$EXIT_USAGE"
         fi
         
-        # write packages to a list then sort it to make sure the packages appear in alphabetical order
-        TMP_FILE="$(mktemp)"
-        # packages with their version ending with -rX       
-        dnf list --installed | awk '{print $1,"   ",  $2}' > "$TMP_FILE"
-
-        sort -V "$TMP_FILE"
-        rm -f "$TMP_FILE"
+        # List packages. dnf already prints the list in alphabetical order
+        # alternatives.aarch64    1.25-1.fc39 =>
+        # name: alternatives
+        # version: 1.25-1.fc39
+        # Notes:
+        #   Skip header which is on the first line
+        #   Remove architecture info from the package name (so it is easier to compare packages across different devices)
+        dnf list --installed | awk 'NR>1 {split($1,col,"\."); printf("%s\t%s\n", col[1], $2)}'
         ;;
     install)
         if [ -n "$FILE" ]; then
@@ -92,7 +93,7 @@ case "$COMMAND" in
         else
             MODULE="$MODULE_NAME"
             if [ -n "$MODULE_VERSION" ] && [ "$MODULE_VERSION" != "latest" ]; then
-                MODULE="${MODULE_NAME}_${MODULE_VERSION}"
+                MODULE="${MODULE_NAME}-${MODULE_VERSION}"
             fi
 
             log "Installing: $MODULE"
