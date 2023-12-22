@@ -92,7 +92,7 @@ case "$COMMAND" in
         else
             MODULE="$MODULE_NAME"
             if [ -n "$MODULE_VERSION" ] && [ "$MODULE_VERSION" != "latest" ]; then
-                MODULE="${MODULE_NAME}_${MODULE_VERSION}"
+                MODULE="${MODULE_NAME}-${MODULE_VERSION}"
             fi
 
             log "Installing: $MODULE"
