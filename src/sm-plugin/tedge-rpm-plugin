@@ -73,15 +73,14 @@ case "$COMMAND" in
             log "dnf is not installed"
             exit "$EXIT_USAGE"
         fi
-        
-        # List packages. dnf already prints the list in alphabetical order
-        # alternatives.aarch64    1.25-1.fc39 =>
-        # name: alternatives
-        # version: 1.25-1.fc39
-        # Notes:
-        #   Skip header which is on the first line
-        #   Remove architecture info from the package name (so it is easier to compare packages across different devices)
-        dnf list --installed | awk 'NR>1 {split($1,col,"\."); printf("%s\t%s\n", col[1], $2)}'
+
+        # Use rpm to get the package list as it is common to all rpm based package managers
+        # Note: version does not include release information
+        # Note: rpm output is not sorted!
+        TMP_FILE="$(mktemp)"
+        rpm -qa --qf "%{NAME}\t%{VERSION}-%{RELEASE}\n" > "$TMP_FILE"
+        sort -V "$TMP_FILE"
+        rm -f "$TMP_FILE"
         ;;
     install)
         if [ -n "$FILE" ]; then
