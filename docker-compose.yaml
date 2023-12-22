@@ -2,5 +2,5 @@ version: '3'
 services:
   tedge:
     build:
-      dockerfile: images/Dockerfile
+      dockerfile: images/${IMAGE:-fedora}.dockerfile
     privileged: true
