@@ -96,7 +96,7 @@ case "$COMMAND" in
                 dnf check-update ||:
                 ;;
             microdnf)
-                microdnf check-update ||:
+                # microdnf does not implement check-update
                 ;;
         esac
         ;;
@@ -124,8 +124,27 @@ case "$COMMAND" in
             log "Installing from file: $FILE"
             # dnf requires the file to have an .rpm extension
             ln -sf "$FILE" "$FILE.rpm"
-            $PACKAGE_MANAGER install -y "$FILE.rpm" || exit "$EXIT_FAILURE"
+
+            CODE=
+            case "$PACKAGE_MANAGER" in
+                microdnf)
+                    # microdnf does not support installing from local files, so use rpm directly
+                    if ! rpm -i "$FILE.rpm"; then
+                        CODE="$EXIT_FAILURE"
+                    fi
+                    ;;
+                *)
+                    if ! $PACKAGE_MANAGER install -y "$FILE.rpm"; then
+                        CODE="$EXIT_FAILURE"
+                    fi
+                    ;;
+            esac
+
             rm -f "$FILE.rpm"
+
+            if [ -n "$CODE" ]; then
+                exit "$CODE"
+            fi
         else
             MODULE="$MODULE_NAME"
             if [ -n "$MODULE_VERSION" ] && [ "$MODULE_VERSION" != "latest" ]; then

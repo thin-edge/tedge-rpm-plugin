@@ -1,7 +1,7 @@
 FROM rockylinux:9-minimal
 
 ENV container docker
-RUN microdnf -y install sudo
+RUN microdnf -y install sudo ca-certificates
 # see https://hub.docker.com/_/rockylinux
 # RockyLinux:9 missing /usr/sbin/init -> ../lib/systemd/systemd
 #  see https://github.com/rocky-linux/sig-cloud-instance-images/issues/39
@@ -18,6 +18,9 @@ RUN ([ -d /lib/systemd/system/sysinit.target.wants ] && cd /lib/systemd/system/s
 
 # install thin-edge.io
 RUN curl -fsSL https://thin-edge.io/install.sh | sh -s
+
+# rockylinux minimal uses a single cert.pem file instead of the ssl directory
+RUN tedge config set c8y.root_cert_path /etc/ssl/cert.pem
 
 # install sm-plugin (microdnf does not support installing from file)
 COPY ./dist/*.rpm /tmp/
