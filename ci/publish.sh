@@ -124,4 +124,4 @@ publish() {
     done
 }
 
-publish "$SOURCE_PATH" "*.rpm" rpm "rpm" "any-version"
+publish "$SOURCE_PATH" "*.rpm" rpm "any-distro" "any-version"
