@@ -12,9 +12,9 @@ down *args="":
 down-all:
     docker compose down -v
 
-# Configure and register the device to the cloud
+# Configure and register the device to the cloud (requires go-c8y-cli and c8y-tedge extension)
 bootstrap *args="":
-    docker compose exec --env "DEVICE_ID=${DEVICE_ID:-}" --env "C8Y_BASEURL=${C8Y_BASEURL:-}" --env "C8Y_USER=${C8Y_USER:-}" --env "C8Y_PASSWORD=${C8Y_PASSWORD:-}" tedge /usr/bin/bootstrap.sh {{args}}
+    c8y tedge bootstrap-container tedge "$DEVICE_ID" {{args}}
 
 # Start a shell
 shell *args='sh':
@@ -29,7 +29,8 @@ venv:
 test *args='':
   ./.venv/bin/python3 -m robot.run --outputdir output {{args}} tests
 
-release:
+# Build linux package
+build:
     ./ci/build.sh
 
 # Cleanup device and all it's dependencies
