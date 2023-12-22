@@ -1,7 +1,5 @@
 # tedge-rpm-plugin
 
-:construction: This repository is still under active development, so don't expect anything to work just yet.
-
 ## Plugin summary
 
 Manage rpm packages on a device using thin-edge.io software management plugin api.
@@ -24,7 +22,8 @@ The following linux package formats are provided on the releases page and also i
 
 |Operating System|Repository link|
 |--|--|
-|RHEL/CentOS/Fedora|[![Latest version of 'tedge-rpm-plugin' @ Cloudsmith](https://api-prd.cloudsmith.io/v1/badges/version/thinedge/community/rpm/tedge-rpm-plugin/latest/a=noarch;d=rpm%252Fany-version/?render=true&show_latest=true)](https://cloudsmith.io/~thinedge/repos/community/packages/detail/rpm/tedge-rpm-plugin/latest/a=noarch;d=rpm%252Fany-version/)|
+|RHEL/CentOS/Fedora/openSUSE|[![Latest version of 'tedge-rpm-plugin' @ Cloudsmith](https://api-prd.cloudsmith.io/v1/badges/version/thinedge/community/rpm/tedge-rpm-plugin/latest/a=noarch;d=any-distro%252Fany-version;t=binary/?render=true&show_latest=true)](https://cloudsmith.io/~thinedge/repos/community/packages/detail/rpm/tedge-rpm-plugin/latest/a=noarch;d=any-distro%252Fany-version;t=binary/)|
+
 
 ### What will be deployed to the device?
 
