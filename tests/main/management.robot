@@ -1,7 +1,6 @@
 *** Settings ***
 Resource    ../resources/common.robot
 Library    Cumulocity
-Library    DeviceLibrary
 
 Suite Setup    Set Main Device
 
