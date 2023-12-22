@@ -39,6 +39,7 @@ jobs:
         job:
           - { image: fedora }
           - { image: opensuse }
+          - { image: rockylinux }
 
     steps:
       # Checkout either the PR or the branch
