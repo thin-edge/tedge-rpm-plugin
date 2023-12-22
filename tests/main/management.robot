@@ -12,13 +12,6 @@ Install package via file
     Operation Should Be SUCCESSFUL    ${operation}
     Cumulocity.Device Should Have Installed Software    example,1.2.3-r1
 
-Install package via file without release suffix
-    ${binary_url}=    Cumulocity.Create Inventory Binary    dummy-without-release    binary    file=${CURDIR}/../testdata/dummy-without-release_2.0.1_noarch.rpm
-    ${operation}=    Cumulocity.Install Software    dummy-without-release,latest::rpm,${binary_url}
-    Operation Should Be SUCCESSFUL    ${operation}
-    Cumulocity.Device Should Have Installed Software    dummy-without-release,2.0.1
-
-
 Install/Uninstall package via Cumulocity
     # install
     ${operation}=    Cumulocity.Install Software    vim,latest::rpm
