@@ -29,7 +29,8 @@ venv:
 test *args='':
   ./.venv/bin/python3 -m robot.run --outputdir output {{args}} tests
 
-release:
+# Build linux package
+build:
     ./ci/build.sh
 
 # Cleanup device and all it's dependencies
