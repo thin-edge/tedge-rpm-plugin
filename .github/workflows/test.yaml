@@ -30,8 +30,16 @@ jobs:
       name: Test Auto
     runs-on: ubuntu-20.04
     env:
-      COMPOSE_PROJECT_NAME: ci_${{github.run_id}}_${{github.run_attempt || '1'}}
-      DEVICE_ID: ci_${{github.run_id}}_${{github.run_attempt || '1'}}
+      COMPOSE_PROJECT_NAME: ci_${{ matrix.job.image }}_${{github.run_id}}_${{github.run_attempt || '1'}}
+      DEVICE_ID: ci_${{ matrix.job.image }}_${{github.run_id}}_${{github.run_attempt || '1'}}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - { image: fedora }
+          - { image: opensuse }
+
     steps:
       # Checkout either the PR or the branch
       - name: Checkout PR
@@ -54,6 +62,7 @@ jobs:
           echo 'C8Y_BASEURL="${{ secrets.C8Y_BASEURL }}"' >> .env
           echo 'C8Y_USER="${{ secrets.C8Y_USER }}"' >> .env
           echo 'C8Y_PASSWORD="${{ secrets.C8Y_PASSWORD }}"' >> .env
+          echo 'IMAGE="${{ matrix.job.image }}"' >> .env
           cat .env
 
       - uses: actions/setup-go@v3
@@ -90,7 +99,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: reports
+          name: reports-${{matrix.job.target}}
           path: output
 
       - name: Stop demo
@@ -101,20 +110,11 @@ jobs:
         if: always()
         run: |
           just cleanup "$DEVICE_ID"
-
-  generate_report:
-    name: Publish report
-    if: ${{ always() && github.event_name == 'pull_request_target' }}
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Download reports
-      uses: actions/download-artifact@v3
-      with:
-        name: reports
-        path: reports
-    - name: Send report to commit
-      uses: joonvena/robotframework-reporter-action@v2.2
-      with:
-        gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Send report to commit
+        uses: joonvena/robotframework-reporter-action@v2.3
+        if: always()
+        with:
+          gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+          report_path: 'output'
+          show_passed_tests: 'false'
