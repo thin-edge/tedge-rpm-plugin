@@ -7,7 +7,7 @@ Suite Setup    Set Main Device
 *** Test Cases ***
 
 Install package via file
-    ${binary_url}=    Cumulocity.Create Inventory Binary    example    binary    file=${CURDIR}/../testdata/example_1.2.3-r1_noarch.rpm
+    ${binary_url}=    Cumulocity.Create Inventory Binary    example    binary    file=${CURDIR}/../testdata/example-1.2.3-r1.noarch.rpm
     ${operation}=    Cumulocity.Install Software    example,latest::rpm,${binary_url}
     Operation Should Be SUCCESSFUL    ${operation}
     Cumulocity.Device Should Have Installed Software    example,1.2.3-r1
