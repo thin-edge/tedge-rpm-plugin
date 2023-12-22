@@ -33,6 +33,10 @@ test *args='':
 build:
     ./ci/build.sh
 
+# Build packages used in tests
+build-test-packages:
+    nfpm package -f tests/testdata/nfpm-example.yaml -p rpm --target tests/testdata
+
 # Cleanup device and all it's dependencies
 cleanup DEVICE_ID $CI="true":
     echo "Removing device and child devices (including certificates)"
