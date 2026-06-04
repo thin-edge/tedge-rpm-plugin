@@ -1,4 +1,4 @@
-FROM fedora:39
+FROM fedora:43
  
 # install thin-edge.io
 RUN curl -fsSL https://thin-edge.io/install.sh | sh -s
