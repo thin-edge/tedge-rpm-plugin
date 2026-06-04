@@ -1,4 +1,4 @@
-FROM rockylinux:10-minimal
+FROM rockylinux/rockylinux:10-minimal
 
 ENV container docker
 RUN microdnf -y install sudo ca-certificates
