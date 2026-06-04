@@ -1,5 +1,9 @@
 FROM rockylinux/rockylinux:10-minimal
 
+# Enforce proper /etc/shadow permissions
+USER root
+RUN chmod 600 /etc/shadow && chown root:root /etc/shadow
+
 ENV container=docker
 RUN microdnf -y install sudo ca-certificates
 # see https://hub.docker.com/_/rockylinux
