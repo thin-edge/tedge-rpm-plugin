@@ -1,6 +1,6 @@
 FROM rockylinux/rockylinux:10-minimal
 
-ENV container docker
+ENV container=docker
 RUN microdnf -y install sudo ca-certificates
 # see https://hub.docker.com/_/rockylinux
 # RockyLinux:9 missing /usr/sbin/init -> ../lib/systemd/systemd
