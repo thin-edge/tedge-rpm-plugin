@@ -1,10 +1,15 @@
-FROM opensuse/leap:15
+FROM opensuse/tumbleweed:latest
 
-RUN zypper install -y dbus-1 systemd-sysvinit sudo
-RUN cp /usr/lib/systemd/system/dbus.service /etc/systemd/system/; \
-    sed -i 's/OOMScoreAdjust=-900//' /etc/systemd/system/dbus.service \
-    # Turn off as test packages aren't signed
-    && echo "pkg_gpgcheck = off" >> /etc/zypp/zypp.conf
+# Enforce proper /etc/shadow permissions
+USER root
+RUN chmod 600 /etc/shadow && chown root:root /etc/shadow
+
+RUN zypper install -y systemd sudo awk
+# Turn off as test packages aren't signed
+RUN echo "Disabling gpg check for testing" \
+    && echo "gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf \
+    && echo "repo_gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf \
+    && echo "pkg_gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf
 
 # install thin-edge.io
 RUN curl -fsSL https://thin-edge.io/install.sh | sh -s
