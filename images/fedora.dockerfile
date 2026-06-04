@@ -1,5 +1,9 @@
-FROM fedora:39
- 
+FROM fedora:43
+
+# Enforce proper /etc/shadow permissions
+USER root
+RUN chmod 600 /etc/shadow && chown root:root /etc/shadow
+
 # install thin-edge.io
 RUN curl -fsSL https://thin-edge.io/install.sh | sh -s
 
