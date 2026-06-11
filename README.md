@@ -62,6 +62,7 @@ The following tools are requires for local development. Please install them befo
 
     ```sh
     just venv
+    just build
     ```
 
 3. Run tests
