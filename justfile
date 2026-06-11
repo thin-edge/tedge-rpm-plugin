@@ -6,7 +6,7 @@ venv:
   ./.venv/bin/pip3 install -r tests/requirements.txt
 
 # Run tests
-test *args='': (build)
+test *args='':
   ./.venv/bin/python3 -m robot.run --outputdir output {{args}} tests
 
 # Build linux package

@@ -19,7 +19,7 @@ Bootstrap Device
     ${domain}=    Cumulocity.Get Domain
     DeviceLibrary.Execute Command    cmd=tedge config set c8y.url ${domain}
     ${credentials}=    Cumulocity.Bulk Register Device With Cumulocity CA    external_id=${device_id}
-    DeviceLibrary.Execute Command    cmd=tedge cert download c8y --device-id ${device_id} --retry-every 5s --one-time-password "${credentials.one_time_password}"
+    DeviceLibrary.Execute Command    cmd=tedge cert download c8y --device-id ${device_id} --retry-every 5s --one-time-password '${credentials.one_time_password}'
     DeviceLibrary.Execute Command    cmd=tedge reconnect c8y
     Cumulocity.External Identity Should Exist    external_id=${device_id}
     ${operation}=    Cumulocity.Get Configuration    typename=tedge-configuration-plugin    timeout=60
