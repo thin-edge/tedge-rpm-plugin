@@ -61,11 +61,9 @@ jobs:
           echo 'IMAGE="${{ matrix.job.image }}"' >> .env
           cat .env
 
-      - uses: actions/setup-go@v6
-        with:
-          go-version: '>=1.17.0'
-      - run: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
-        name: Install dependencies
+      - uses: taiki-e/install-action@just
+      - name: Install tools
+        run: npm install -g @goreleaser/nfpm
 
       - uses: actions/setup-python@v6
         with:
@@ -73,10 +71,6 @@ jobs:
           cache: 'pip'
           cache-dependency-path: |
             tests/requirements.txt
-
-      - uses: extractions/setup-just@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: |
