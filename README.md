@@ -42,41 +42,30 @@ The following packages are required to use the plugin:
 The following tools are requires for local development. Please install them before following the instructions:
 
 * [nfpm](https://nfpm.goreleaser.com/tips/) - Tool to build linux packages
-* [go-c8y-cli](https://goc8ycli.netlify.app/) - A Cumulocity IoT CLI app
-* [c8y-tedge extension](https://github.com/thin-edge/c8y-tedge) - go-c8y-cli extension for thin-edge.io to help with bootstrapping
 
-### Start demo
+### Testing
 
-1. Build the tedge-rpm-plugin package
+1. Create a dotenv (`.env`) file containing the Cumulocity credentials to be used for the system tests
 
-    ```sh
-    just build
-    ```
-
-2. Start the demo
+    **file: .env**
 
     ```sh
-    just up
+    C8Y_BASEURL=https://example.cumulocity.com
+    C8Y_USER=
+    C8Y_PASSWORD=
+
+    # one of; IMAGE=rockylinux|opensuse|fedora
+    IMAGE=fedora
     ```
 
-3. Activate your Cumulocity IoT session in go-c8y-cli where you want to bootstrap the device to
+2. Install the test dependencies
 
     ```sh
-    set-session
+    just venv
     ```
 
-    `set-session` is part of [go-c8y-cli](https://goc8ycli.netlify.app/), check out the documentation for instructions on how to install and create your session if you don't already have one.
-
-4. Bootstrap the device
+3. Run test tests
 
     ```sh
-    just bootstrap
+    just test
     ```
-
-    The bootstrap command used the [c8y-tedge extension](https://github.com/thin-edge/c8y-tedge).
-
-### Stop demo
-
-```sh
-just down
-```

@@ -9,8 +9,6 @@ on:
   # Reference: https://dev.to/petrsvihlik/using-environment-protection-rules-to-secure-secrets-when-building-external-forks-with-pullrequesttarget-hci
   pull_request_target:
     branches: [ main ]
-  push:
-    branches: [ main ]
   merge_group:
 
 permissions:
@@ -38,9 +36,6 @@ jobs:
       issues: write
       pull-requests: write
       contents: read
-    env:
-      COMPOSE_PROJECT_NAME: ci_${{ matrix.job.image }}_${{github.run_id}}_${{github.run_attempt || '1'}}
-      DEVICE_ID: ci_${{ matrix.job.image }}_${{github.run_id}}_${{github.run_attempt || '1'}}
     
     strategy:
       fail-fast: false
@@ -57,13 +52,9 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || '' }}
 
-      - uses: reubenmiller/setup-go-c8y-cli@main
-      - name: install c8y-tedge extension
-        run: c8y extension install thin-edge/c8y-tedge
       - name: create .env file
         run: |
           touch .env
-          echo "DEVICE_ID=$DEVICE_ID" >> .env
           echo 'C8Y_BASEURL="${{ secrets.C8Y_BASEURL }}"' >> .env
           echo 'C8Y_USER="${{ secrets.C8Y_USER }}"' >> .env
           echo 'C8Y_PASSWORD="${{ secrets.C8Y_PASSWORD }}"' >> .env
@@ -91,31 +82,17 @@ jobs:
         run: |
           just venv
 
-      - name: Start demo
-        run: |
-          just build
-          just up
-          just bootstrap
-
       - name: Run tests
-        run: just test
+        run: |
+          just test
 
       - name: Upload test results
         uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: reports-${{matrix.job.target}}
+          name: reports-${{matrix.job.image}}
           path: output
 
-      - name: Stop demo
-        if: always()
-        run: just down-all
-
-      - name: Cleanup Devices
-        if: always()
-        run: |
-          just cleanup "$DEVICE_ID"
-      
       - name: Send report to commit
         uses: joonvena/robotframework-reporter-action@v2.5
         if: ${{ always() && github.event_name == 'pull_request_target' }}
