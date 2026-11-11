@@ -5,8 +5,11 @@ USER root
 RUN chmod 600 /etc/shadow && chown root:root /etc/shadow
 
 RUN zypper install -y systemd sudo awk
-# Turn off as test packages aren't signed
+# Turn off as test packages aren't signed.
+# zypp.conf.d drop-ins are INI files: settings outside a [main] section are ignored
 RUN echo "Disabling gpg check for testing" \
+    && mkdir -p /etc/zypp/zypp.conf.d \
+    && echo "[main]" > /etc/zypp/zypp.conf.d/disable-gpg.conf \
     && echo "gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf \
     && echo "repo_gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf \
     && echo "pkg_gpgcheck = off" >> /etc/zypp/zypp.conf.d/disable-gpg.conf
